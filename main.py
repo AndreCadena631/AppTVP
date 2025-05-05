@@ -40,8 +40,8 @@ class MainScreen(BoxLayout):
         layout = BoxLayout(orientation='vertical', padding=20, spacing=20)  # Reduced padding for higher positioning
 
         # Título
-        title = Label(text='APP TVP', size_hint_y=None, height=70, color=(0, 0, 0, 1), font_size=25)  # Aumentar tamaño y cambiar color a blanco
-        title.text_size = (self.width, None)
+        title = Label(text='CimaTVPDetect', size_hint_y=None, height=70, color=(0, 0, 0, 1), font_size=25)  # Aumentar tamaño y cambiar color a blanco
+        title.text_size = (200, None)
         title.halign = 'center'
         title.valign = 'middle'
         layout.add_widget(title)
@@ -290,8 +290,16 @@ class MainScreen(BoxLayout):
 
 
         # Display prediction result in a popup
-        result_message = "Hay Riesgo de tenga TVP" if prediction[0] == 1 else "No hay Riesgo de que tenga TVP"
-        popup = Popup(title='Resultado del Diagnostico', content=Label(text=result_message), size_hint=(0.8, 0.8))
+        result_message = "Hay Riesgo de TVP.\n \nSe recomienda asistir a consulta con \nun especialista en angiología \no equivalente para validar \ny confirmar el diagnóstico." if prediction[0] == 1 else "No hay Riesgo de TVP."
+        content = BoxLayout(orientation='vertical', padding=10)
+        content.add_widget(Label(text=result_message, halign='center', valign='middle'))
+        accept_button = Button(text='Aceptar', size_hint_y=None, height=40)
+        def close_popup(instance):
+            popup.dismiss()
+        
+        accept_button.bind(on_press=close_popup)
+        content.add_widget(accept_button)
+        popup = Popup(title='Resultado del Pre-Diagnóstico', content=content, size_hint=(0.8, 0.8))
         popup.open()
 
 
