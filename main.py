@@ -1,7 +1,7 @@
 from kivy.app import App
 import pandas as pd
 import joblib
-from kivy.core.window import Window  # Importar Window para establecer el tamaño de la ventana
+from kivy.core.window import Window 
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -10,6 +10,7 @@ from kivy.uix.image import Image
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
  
  
@@ -28,6 +29,9 @@ class MainScreen(BoxLayout):
         self.checkbox4_state = 0
         self.checkbox5_state = 0
         self.checkbox6_state = 0
+
+        # Initialize results list
+        self.results_list = []
 
     def update_main_content(self, *args):  # Accept additional arguments
         self.clear_widgets()  # Clear existing widgets
@@ -155,10 +159,18 @@ class MainScreen(BoxLayout):
         title_third.size_hint_x = 1  # Ensure it takes full width
         layout.add_widget(title_third)
 
+        # Recuadro de texto para Pseudónimo
+        pseudonym_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
+        pseudonym_label = Label(text='Pseudónimo:', size_hint_x=None, width=200, color=(0, 0, 0, 1))
+        self.pseudonym_input = TextInput(hint_text='Ingrese su pseudónimo', size_hint_y=None, height=40, multiline=False, background_color=(1, 0.8, 0.4, 1))
+        pseudonym_layout.add_widget(pseudonym_label)
+        pseudonym_layout.add_widget(self.pseudonym_input)
+        layout.add_widget(pseudonym_layout)
+
         # Pregunta 1
         age_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)  # Horizontal layout for age question
         age_label = Label(text='¿Cuál es su edad?', size_hint_x=None, width=200, color=(0, 0, 0, 1))  # Question label
-        age_spinner = Spinner(text='Seleccione su edad', values=['0-5', '6-12', '13-20', '21-39', '40-49', '50-59', '60-69', '70-84', '85-100'], size_hint_y=None, height=40)  # Selector
+        age_spinner = Spinner(text='Edad', values=['0-5', '6-12', '13-20', '21-39', '40-49', '50-59', '60-69', '70-84', '85-100'], size_hint_y=None, height=40)  # Selector
 
         age_layout.add_widget(age_label)  # Add label to layout
         age_layout.add_widget(age_spinner)  # Add spinner to layout
@@ -167,7 +179,7 @@ class MainScreen(BoxLayout):
         # Pregunta 2
         gender_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)  # Horizontal layout for gender question
         gender_label = Label(text='¿Cuál es su género?', size_hint_x=None, width=200, color=(0, 0, 0, 1))  # Question label
-        gender_spinner = Spinner(text='Seleccione su género', values=['Masculino', 'Femenino'], size_hint_y=None, height=40)  # Selector
+        gender_spinner = Spinner(text='Género', values=['Masculino', 'Femenino'], size_hint_y=None, height=40)  # Selector
         self.selected_age_value = None  # Variable to store age value
         self.selected_gender_value = None  # Variable to store gender value
 
@@ -255,6 +267,14 @@ class MainScreen(BoxLayout):
         calculate_button.bind(on_press=self.calculate_results)  # Bind the button to the calculation method
         layout.add_widget(calculate_button)  # Add the button to the layout
 
+        # Botón para mostrar/ocultar resultados
+        self.show_results_button = Button(text='MOSTRAR RESULTADOS', size_hint_y=None, height=50)
+        self.show_results_button.bind(on_press=self.toggle_results_view)
+        layout.add_widget(self.show_results_button)
+
+        # Espaciador estático para separar el botón del contenedor de resultados
+        spacer = Label(size_hint_y=None, height=20)
+        layout.add_widget(spacer)
 
         # Add the layout to the scroll view
         scroll_view.add_widget(layout)
@@ -263,9 +283,10 @@ class MainScreen(BoxLayout):
     def calculate_results(self, *args):
         # Collect data from Spinners and Checkboxes
         age_value = self.selected_age_value if hasattr(self, 'selected_age_value') else None  # Ensure age_value is set
-
+        
         gender_value = 0 if self.gender_spinner.text == 'Masculino' else 1  # Assign 0 for Masculino and 1 for Femenino
 
+        pseudonym = self.pseudonym_input.text if self.pseudonym_input.text else "Sin pseudónimo"
 
         checkbox1_state = self.update_checkbox_state(self.checkbox)
         checkbox2_state = self.update_checkbox_state(self.checkbox1)
@@ -274,8 +295,6 @@ class MainScreen(BoxLayout):
         checkbox5_state = self.update_checkbox_state(self.checkbox4)
         checkbox6_state = self.update_checkbox_state(self.checkbox5)
         checkbox7_state = self.update_checkbox_state(self.checkbox6)
-        
-
 
         # Compile data into an array
         results = [age_value, gender_value, checkbox1_state, checkbox2_state, checkbox3_state, checkbox4_state, checkbox5_state, checkbox6_state, checkbox7_state]
@@ -286,8 +305,23 @@ class MainScreen(BoxLayout):
 
         new_scaled_results = sc.transform(new_results)
 
-        prediction = KNN_model.predict(new_scaled_results)  
+        prediction = KNN_model.predict(new_scaled_results)
 
+        # Save results to list
+        result_entry = {
+            'pseudonym': pseudonym,
+            'age': age_value,
+            'gender': 'Masculino' if gender_value == 0 else 'Femenino',
+            'cancer': checkbox1_state,
+            'paralysis': checkbox2_state,
+            'bed_rest': checkbox3_state,
+            'pain': checkbox4_state,
+            'swelling': checkbox5_state,
+            'calf_increase': checkbox6_state,
+            'edema': checkbox7_state,
+            'prediction': 'Riesgo de TVP' if prediction[0] == 1 else 'No hay Riesgo de TVP'
+        }
+        self.results_list.append(result_entry)
 
         # Display prediction result in a popup
         result_message = "Hay Riesgo de TVP.\n \nSe recomienda asistir a consulta con \nun especialista en angiología \no equivalente para validar \ny confirmar el diagnóstico." if prediction[0] == 1 else "No hay Riesgo de TVP."
@@ -296,12 +330,39 @@ class MainScreen(BoxLayout):
         accept_button = Button(text='Aceptar', size_hint_y=None, height=40)
         def close_popup(instance):
             popup.dismiss()
-        
+
         accept_button.bind(on_press=close_popup)
         content.add_widget(accept_button)
         popup = Popup(title='Resultado del Pre-Diagnóstico', content=content, size_hint=(0.8, 0.8))
         popup.open()
 
+
+    def toggle_results_view(self, *args):
+        # Crear contenido del popup
+        content = BoxLayout(orientation='vertical', padding=5, spacing=5)
+        if self.results_list:
+            scroll_view = ScrollView(size_hint=(1, 1))
+            results_container = BoxLayout(orientation='vertical', size_hint_y=None, spacing=5)
+            results_container.bind(minimum_height=results_container.setter('height'))
+            for result in self.results_list:
+                result_text = f"Pseudónimo: {result['pseudonym']}\nEdad (grupo): {result['age']}\nGénero: {result['gender']}\nSintomas (checkbox): {[result['cancer'],result['paralysis'],result['bed_rest'],result['pain'],result['swelling'],result['calf_increase'],result['edema']]}\nPredicción: {result['prediction']}\n"
+                result_label = Label(text=result_text, size_hint_y=None, height=110, halign='left', valign='top', color=(1, 1, 1, 1))
+                result_label.text_size = (Window.width * 0.8, None)  # Adjust to popup width
+                results_container.add_widget(result_label)
+            scroll_view.add_widget(results_container)
+            content.add_widget(scroll_view)
+        else:
+            no_results_label = Label(text="No hay resultados guardados.", color=(1, 1, 1, 1))
+            content.add_widget(no_results_label)
+
+        # Botón para cerrar el popup
+        close_button = Button(text='Cerrar', size_hint_y=None, height=40)
+        content.add_widget(close_button)
+
+        # Crear y mostrar el popup
+        popup = Popup(title='Resultados Guardados', content=content, size_hint=(0.9, 0.9))
+        close_button.bind(on_press=popup.dismiss)
+        popup.open()
 
     def on_size(self, *args):
         self.rect.size = self.size
@@ -316,5 +377,3 @@ class MyApp(App):
 
 if __name__ == '__main__':
     MyApp().run()
-
-
