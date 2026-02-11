@@ -1,3 +1,4 @@
+__version__ = "1.0.3"
 from kivy.app import App
 import pandas as pd
 import joblib
@@ -377,3 +378,4 @@ class MyApp(App):
 
 if __name__ == '__main__':
     MyApp().run()
+
