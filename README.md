@@ -39,8 +39,9 @@ python main.py
 - Instala Buildozer: `pip install buildozer`
 - Configura `buildozer.spec` según tus necesidades.
 - Ejecuta: `buildozer android debug`
+- Para mas informacion vea la documentación, https://kivy.org/doc/stable/guide/packaging-android.html
 
-Para iOS, usa Xcode en macOS con Kivy-ios.
+Para iOS, usa Xcode en macOS con Kivy-ios. Documentacion para iOS, https://kivy.org/doc/stable/guide/packaging-ios.html
 
 ## Uso
 
@@ -68,7 +69,7 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para má
 
 ## Contacto
 
-Para preguntas o soporte, contacta a andre.cadena@gmail.com o abre un issue en el repositorio.
+Para preguntas o soporte, contacta a andre.cadena@uabc.edu.com o abre un issue en el repositorio.
 
 
 
