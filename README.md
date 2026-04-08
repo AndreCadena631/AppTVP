@@ -19,6 +19,7 @@ El cuestionario evalúa factores como síntomas clínicos, antecedentes médicos
 - Python 3.12 o superior
 - Cada carpeta tiene un archivo requirements.txt que contiene las librerias especificas de cada version.
 - El proyecto de AppTVP-Chat requiere la descarga del modelo SLM para funcionar, este se puede encontrar en el siguiente Drive: https://drive.google.com/drive/folders/1OmudhLvtC2C55YVGAkOOrMb3JFtMTrCL?usp=sharing
+  Descargar y descomprimir en el mismo directorio que el main.py de AppTVP-Chat.
 
 ## Instalación
 
