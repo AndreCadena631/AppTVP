@@ -16,26 +16,23 @@ El cuestionario evalúa factores como síntomas clínicos, antecedentes médicos
 
 ## Requisitos
 
-- Python 3.8 o superior
-- Kivy 2.0+
-- Scikit-Learn 1.0+
-- Joblib 1.0+
-- Pandas 1.3+
-- Un dispositivo móvil con Android (para APK) o iOS (requiere Buildozer para compilación)
+- Python 3.12 o superior
+- Cada carpeta tiene un archivo requirements.txt que contiene las librerias especificas de cada version.
+- El proyecto de AppTVP-Chat requiere la descarga del modelo SLM para funcionar, este se puede encontrar en el siguiente Drive: https://drive.google.com/drive/folders/1OmudhLvtC2C55YVGAkOOrMb3JFtMTrCL?usp=sharing
 
 ## Instalación
 
 1. Clona el repositorio:
-git clone https://github.com/tu-usuario/CimaTVPDetect.git cd CimaTVPDetect
+   git clone https://github.com/AndreCadena631/AppTVP.git cd AppTVP
 
-2. Instala las dependencias:
-pip install -r requirements.txt
+2. Instala las dependencias del proyecto a reproducir:
+   pip install -r requirements.txt
 
 3. Para ejecutar en modo de desarrollo (escritorio):
-python main.py
+   python main.py
 
+4. Para compilar en APK (Android) - Opcional:
 
-4. Para compilar en APK (Android):
 - Instala Buildozer: `pip install buildozer`
 - Configura `buildozer.spec` según tus necesidades.
 - Ejecuta: `buildozer android debug`
@@ -55,6 +52,7 @@ Para iOS, usa Xcode en macOS con Kivy-ios. Documentacion para iOS, https://kivy.
 ## Contribución
 
 Las contribuciones son bienvenidas. Para contribuir:
+
 1. Haz un fork del repositorio.
 2. Crea una rama para tu feature: `git checkout -b feature/nueva-funcionalidad`.
 3. Realiza tus cambios y haz commit: `git commit -m 'Agrega nueva funcionalidad'`.
@@ -70,13 +68,3 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para má
 ## Contacto
 
 Para preguntas o soporte, contacta a andre.cadena@uabc.edu.com o abre un issue en el repositorio.
-
-
-
-
-
-
-
-
-
-
